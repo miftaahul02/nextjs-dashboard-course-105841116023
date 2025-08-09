@@ -1,3 +1,5 @@
+'use client'; // Menandakan ini sebagai Client Component karena ada interaktivitas formulir
+
 import { CustomerField } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
@@ -7,10 +9,17 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
+import { createInvoice } from '@/app/lib/actions'; // Import Server Action createInvoice
 
-export default function Form({ customers }: { customers: CustomerField[] }) {
+// Mengganti nama komponen dari Form menjadi CreateInvoiceForm agar lebih deskriptif
+export default function CreateInvoiceForm({
+  customers,
+}: {
+  customers: CustomerField[];
+}) {
   return (
-    <form>
+    // Mengaitkan formulir dengan Server Action 'createInvoice'
+    <form action={createInvoice}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">
@@ -20,9 +29,10 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
           <div className="relative">
             <select
               id="customer"
-              name="customerId"
+              name="customerId" // Atribut 'name' penting untuk FormData
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               defaultValue=""
+              required // Menambahkan atribut 'required' untuk validasi dasar
             >
               <option value="" disabled>
                 Select a customer
@@ -46,11 +56,12 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
             <div className="relative">
               <input
                 id="amount"
-                name="amount"
                 type="number"
+                name="amount" // Atribut 'name' penting untuk FormData
                 step="0.01"
                 placeholder="Enter USD amount"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                required // Menambahkan atribut 'required' untuk validasi dasar
               />
               <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -67,10 +78,11 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
               <div className="flex items-center">
                 <input
                   id="pending"
-                  name="status"
+                  name="status" // Atribut 'name' penting untuk FormData
                   type="radio"
                   value="pending"
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+                  required // Menambahkan atribut 'required' untuk validasi dasar
                 />
                 <label
                   htmlFor="pending"
@@ -82,10 +94,11 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
               <div className="flex items-center">
                 <input
                   id="paid"
-                  name="status"
+                  name="status" // Atribut 'name' penting untuk FormData
                   type="radio"
                   value="paid"
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+                  required // Menambahkan atribut 'required' untuk validasi dasar
                 />
                 <label
                   htmlFor="paid"

@@ -1,37 +1,49 @@
-'use client';
+'use client'; // Ini adalah Client Component
 
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import Link from 'next/link';
-import { generatePagination } from '@/app/lib/utils';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { generatePagination } from '@/app/lib/utils'; // Impor fungsi pembantu pagination
 
 export default function Pagination({ totalPages }: { totalPages: number }) {
-  // NOTE: Uncomment this code in Chapter 11
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentPage = Number(searchParams.get('page')) || 1;
+
+  // Membuat URL baru dengan nomor halaman yang diperbarui
+  const createPageURL = (pageNumber: number | string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('page', pageNumber.toString());
+    return `${pathname}?${params.toString()}`;
+  };
+
+  // Menggunakan fungsi pembantu untuk menghasilkan array halaman
+  const allPages = generatePagination(currentPage, totalPages);
 
   return (
     <>
-      {/*  NOTE: Uncomment this code in Chapter 11 */}
-
-      {/* <div className="inline-flex">
+      <div className="inline-flex">
+        {/* Tombol halaman sebelumnya */}
         <PaginationArrow
           direction="left"
-
           href={createPageURL(currentPage - 1)}
           isDisabled={currentPage <= 1}
         />
 
+        {/* Render setiap nomor halaman atau '...' */}
         <div className="flex -space-x-px">
-          {allPages.map((page, index) => {
+          {allPages.map((page) => {
             let position: 'first' | 'last' | 'single' | 'middle' | undefined;
 
-            if (index === 0) position = 'first';
-            if (index === allPages.length - 1) position = 'last';
+            if (page === allPages[0]) position = 'first';
+            if (page === allPages[allPages.length - 1]) position = 'last';
             if (allPages.length === 1) position = 'single';
             if (page === '...') position = 'middle';
 
             return (
               <PaginationNumber
-                key={`${page}-${index}`}
+                key={page}
                 href={createPageURL(page)}
                 page={page}
                 position={position}
@@ -41,19 +53,18 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
           })}
         </div>
 
+        {/* Tombol halaman selanjutnya */}
         <PaginationArrow
           direction="right"
           href={createPageURL(currentPage + 1)}
           isDisabled={currentPage >= totalPages}
-<<<<<<< HEAD
         />
-      </div> */}
-    {/* //   </div> */}
-
+      </div>
     </>
   );
 }
 
+// Komponen untuk nomor halaman individual
 function PaginationNumber({
   page,
   href,
@@ -62,14 +73,14 @@ function PaginationNumber({
 }: {
   page: number | string;
   href: string;
-  position?: 'first' | 'last' | 'middle' | 'single';
+  position?: 'first' | 'last' | 'single' | 'middle';
   isActive: boolean;
 }) {
   const className = clsx(
     'flex h-10 w-10 items-center justify-center text-sm border',
     {
-      'rounded-l-md': position === 'first' || position === 'single',
-      'rounded-r-md': position === 'last' || position === 'single',
+      'rounded-l-lg': position === 'first' || position === 'single',
+      'rounded-r-lg': position === 'last' || position === 'single',
       'z-10 bg-blue-600 border-blue-600 text-white': isActive,
       'hover:bg-gray-100': !isActive && position !== 'middle',
       'text-gray-300': position === 'middle',
@@ -85,6 +96,7 @@ function PaginationNumber({
   );
 }
 
+// Komponen untuk panah pagination (kiri/kanan)
 function PaginationArrow({
   href,
   direction,

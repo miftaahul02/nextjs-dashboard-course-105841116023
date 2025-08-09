@@ -1,27 +1,29 @@
 import Image from 'next/image';
 import { lusitana } from '@/app/ui/fonts';
-import Search from '@/app/ui/search';
-import {
-  CustomersTableType,
-  FormattedCustomersTable,
-} from '@/app/lib/definitions';
+import { FormattedCustomersTable } from '@/app/lib/definitions'; // Menggunakan FormattedCustomersTable
+import { fetchFilteredCustomers } from '@/app/lib/data'; // Import fungsi pengambilan data
 
+// Komponen tabel pelanggan. Ini adalah Server Component.
 export default async function CustomersTable({
-  customers,
+  query,
+  currentPage, // Parameter currentPage akan digunakan nanti untuk pagination jika ditambahkan
 }: {
-  customers: FormattedCustomersTable[];
+  query: string;
+  currentPage: number; // Placeholder, akan digunakan di chapter selanjutnya untuk pagination
 }) {
+  // Mengambil data pelanggan yang sudah difilter dari database di dalam komponen ini
+  // Ini akan mengambil data setiap kali query atau currentPage berubah
+  const customers = await fetchFilteredCustomers(query);
+
   return (
     <div className="w-full">
-      <h1 className={`${lusitana.className} mb-8 text-xl md:text-2xl`}>
-        Customers
-      </h1>
-      <Search placeholder="Search customers..." />
+      {/* Bagian H1 dan Search dihapus dari sini karena sudah ada di page.tsx */}
       <div className="mt-6 flow-root">
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden rounded-md bg-gray-50 p-2 md:pt-0">
               <div className="md:hidden">
+                {/* Tampilan mobile untuk tabel pelanggan */}
                 {customers?.map((customer) => (
                   <div
                     key={customer.id}
