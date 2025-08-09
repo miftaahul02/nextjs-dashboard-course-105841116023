@@ -13,23 +13,37 @@ const iconMap = {
   invoices: InboxIcon,
 };
 
-export default async function CardWrapper() {
+// Komponen CardWrapper yang menerima data kartu sebagai props
+export default function CardWrapper({
+  numberOfInvoices,
+  numberOfCustomers,
+  totalPaidInvoices,
+  totalPendingInvoices,
+}: {
+  numberOfInvoices: number;
+  numberOfCustomers: number;
+  totalPaidInvoices: string;
+  totalPendingInvoices: string;
+}) {
   return (
     <>
-      {/* NOTE: Uncomment this code in Chapter 9 */}
-
-      {/* <Card title="Collected" value={totalPaidInvoices} type="collected" />
+      {/* Kartu untuk total faktur terkumpul */}
+      <Card title="Collected" value={totalPaidInvoices} type="collected" />
+      {/* Kartu untuk total faktur tertunda */}
       <Card title="Pending" value={totalPendingInvoices} type="pending" />
+      {/* Kartu untuk total jumlah faktur */}
       <Card title="Total Invoices" value={numberOfInvoices} type="invoices" />
+      {/* Kartu untuk total jumlah pelanggan */}
       <Card
         title="Total Customers"
         value={numberOfCustomers}
         type="customers"
-      /> */}
+      />
     </>
   );
 }
 
+// Komponen Card individu yang menampilkan judul, nilai, dan ikon
 export function Card({
   title,
   value,
