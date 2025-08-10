@@ -4,30 +4,27 @@ import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 
-// Coba impor NextPageProps secara eksplisit dari 'next'
-// Ini adalah cara standar yang seharusnya bekerja di sebagian besar setup Next.js.
-import type { MetadataRoute } from 'next'; // Menggunakan MetadataRoute sebagai fallback atau referensi
+// Hapus import type { PageProps} from 'next'; karena bermasalah.
 
-// Atau, jika NextPageProps masih merah, kita bisa definisikan secara manual
-// const Page = ({ searchParams }: { searchParams?: { query?: string | string[]; page?: string | string[]; }; }) => {
-
-// Untuk Page Component, `searchParams` secara default adalah string atau array of string.
-// Kita bisa menggunakan cara ini jika `NextPageProps` masih bermasalah.
-interface CustomerPageProps {
-  searchParams?: {
-    query?: string;
-    page?: string;
-  };
+// Definisikan tipe untuk props halaman secara manual.
+// Ini adalah struktur umum yang diterima oleh komponen halaman di Next.js App Router.
+interface PageComponentProps {
+  params?: { [key: string]: string | string[] | undefined }; // Untuk dynamic routes, contoh: /customers/[id]
+  searchParams?: { [key: string]: string | string[] | undefined }; // Untuk query params, contoh: /customers?query=abc&page=1
 }
 
-export default function Page({ searchParams }: CustomerPageProps) {
-  const query = searchParams?.query || '';
-  const currentPage = Number(searchParams?.page) || 1;
+// Halaman ini adalah Server Component yang akan menerima searchParams dari URL.
+// Kita akan menggunakan tipe PageComponentProps yang kita definisikan sendiri.
+export default function Page({ searchParams }: PageComponentProps) {
+  // Pastikan untuk menangani searchParams yang mungkin undefined atau berupa array
+  const query = typeof searchParams?.query === 'string' ? searchParams.query : '';
+  const currentPage = typeof searchParams?.page === 'string' ? Number(searchParams.page) : 1;
 
   return (
     <div className="w-full">
       <h1 className={`${lusitana.className} mb-8 text-2xl`}>Customers</h1>
       <Search placeholder="Search customers..." />
+      {/* Menggunakan Suspense untuk menampilkan skeleton saat tabel dimuat */}
       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
         <CustomersTable query={query} currentPage={currentPage} />
       </Suspense>
