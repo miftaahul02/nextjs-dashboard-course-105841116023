@@ -11,9 +11,8 @@ export const metadata: Metadata = {
   title: 'Customers',
 };
 
-// Ini adalah komponen halaman utama untuk /dashboard/customers
-// Component ini menerima searchParams, yang merupakan objek
-// yang berisi query string dari URL.
+// Ini adalah komponen halaman utama untuk /dashboard/customers.
+// Tipe data untuk searchParams didefinisikan secara langsung di sini.
 export default async function Page({
   searchParams,
 }: {
@@ -26,7 +25,7 @@ export default async function Page({
 
   // Ambil data pelanggan yang difilter dari database.
   const customers = await fetchFilteredCustomers(query);
-  
+
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
