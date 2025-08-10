@@ -11,16 +11,15 @@ export const metadata: Metadata = {
   title: 'Customers',
 };
 
-// Gunakan `as any` untuk menimpa tipe yang berkonflik secara paksa.
-// Ini akan membuat Next.js menggunakan tipe yang kita definisikan.
-export default async function Page({
-  searchParams,
-}: {
+// Interface yang mendefinisikan properti searchParams dengan benar
+interface PageProps {
   searchParams?: {
     query?: string;
     page?: string;
   };
-} as any) {
+}
+
+export default async function Page({ searchParams }: PageProps) {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
 
