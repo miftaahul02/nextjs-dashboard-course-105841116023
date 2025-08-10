@@ -11,17 +11,16 @@ export const metadata: Metadata = {
   title: 'Customers',
 };
 
-// Buat interface untuk mendefinisikan tipe data searchParams
-interface SearchParams {
-  query?: string;
-  page?: string;
-}
-
+// Gunakan `as any` untuk menimpa tipe yang berkonflik secara paksa.
+// Ini akan membuat Next.js menggunakan tipe yang kita definisikan.
 export default async function Page({
   searchParams,
 }: {
-  searchParams?: SearchParams;
-}) {
+  searchParams?: {
+    query?: string;
+    page?: string;
+  };
+} as any) {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
 
@@ -40,7 +39,7 @@ export default async function Page({
         <Table customers={customers} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
-        {/* <Pagination totalPages={totalPages} /> */}
+        <Pagination totalPages={totalPages} />
       </div>
     </div>
   );
