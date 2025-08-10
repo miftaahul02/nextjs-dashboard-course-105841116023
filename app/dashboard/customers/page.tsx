@@ -16,19 +16,13 @@ export default async function Page({
 }: {
   searchParams?: { query?: string; page?: string };
 }) {
-  const query = searchParams?.query || '';
+  const query = searchParams?.query ?? '';
 
   let customersToDisplay: FormattedCustomersTable[] = [];
   try {
     const fetchedCustomers = await fetchFilteredCustomers(query);
-
     if (Array.isArray(fetchedCustomers)) {
       customersToDisplay = fetchedCustomers;
-    } else {
-      console.warn(
-        'fetchFilteredCustomers did not return an array:',
-        fetchedCustomers
-      );
     }
   } catch (error) {
     console.error('Failed to fetch customers:', error);
