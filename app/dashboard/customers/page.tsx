@@ -12,16 +12,16 @@ export const metadata: Metadata = {
 };
 
 interface CustomerPageProps {
-  searchParams?: {
+  searchParam?: {
     query?: string;
     page?: string;
   };
 }
 
 // Tambahkan 'async' di sini
-export default async function Page({ searchParams }: CustomerPageProps) {
-  const query = searchParams?.query || '';
-  const currentPage = Number(searchParams?.page) || 1;
+export default async function Page({ searchParam }: CustomerPageProps) {
+  const query = searchParam?.query || '';
+  const currentPage = Number(searchParam?.page) || 1;
 
   const customers = await fetchFilteredCustomers(query, currentPage);
   const totalPages = await fetchCustomersPages(query);

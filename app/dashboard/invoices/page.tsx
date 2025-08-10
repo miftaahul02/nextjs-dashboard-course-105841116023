@@ -8,15 +8,15 @@ import { Suspense } from 'react';
 import { fetchInvoicesPages } from '@/app/lib/data'; // Import fungsi untuk menghitung total halaman
 
 export default async function Page({
-  searchParams,
+  searchParam,
 }: {
-  searchParams?: {
+  searchParam?: {
     query?: string;
     page?: string;
   };
 }) {
-  const query = searchParams?.query || ''; // Ambil query dari URL
-  const currentPage = Number(searchParams?.page) || 1; // Ambil currentPage dari URL
+  const query = searchParam?.query || ''; // Ambil query dari URL
+  const currentPage = Number(searchParam?.page) || 1; // Ambil currentPage dari URL
 
   const totalPages = await fetchInvoicesPages(query); // Ambil total halaman berdasarkan query
 

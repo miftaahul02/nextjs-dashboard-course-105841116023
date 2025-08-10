@@ -3,7 +3,7 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams} from 'next/navigation';
 import { generatePagination } from '@/app/lib/utils'; // Impor fungsi pembantu pagination
 
 export default function Pagination({ totalPages }: { totalPages: number }) {
@@ -13,9 +13,9 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
 
   // Membuat URL baru dengan nomor halaman yang diperbarui
   const createPageURL = (pageNumber: number | string) => {
-    const params = new URLSearchParams(searchParams);
-    params.set('page', pageNumber.toString());
-    return `${pathname}?${params.toString()}`;
+    const param = new URLSearchParams(searchParams);
+    param.set('page', pageNumber.toString());
+    return `${pathname}?${param.toString()}`;
   };
 
   // Menggunakan fungsi pembantu untuk menghasilkan array halaman
