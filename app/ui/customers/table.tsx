@@ -1,24 +1,17 @@
 import Image from 'next/image';
 import { lusitana } from '@/app/ui/fonts';
 import { FormattedCustomersTable } from '@/app/lib/definitions'; // Pastikan FormattedCustomersTable diimpor
-import { fetchFilteredCustomers } from '@/app/lib/data'; // Import fungsi pengambilan data
 
-// Komponen tabel pelanggan. Ini adalah Server Component.
+// Komponen tabel pelanggan. Sekarang menerima array 'customers' langsung.
 export default async function CustomersTable({
-  query,
-  currentPage, // Parameter currentPage akan digunakan nanti untuk pagination jika ditambahkan
+  customers, // Sekarang menerima array customers langsung
 }: {
-  // Pastikan tipe props ini sesuai dengan yang diharapkan
-  query: string;
-  currentPage: number;
+  customers: FormattedCustomersTable[]; // Tipe harus FormattedCustomersTable[]
 }) {
-  // Mengambil data pelanggan yang sudah difilter dari database di dalam komponen ini
-  // Ini akan mengambil data setiap kali query atau currentPage berubah
-  const customers = await fetchFilteredCustomers(query);
+  // fetchFilteredCustomers TIDAK DIPANGGIL DI SINI lagi, karena data diteruskan dari page.tsx
 
   return (
     <div className="w-full">
-      {/* Bagian H1 dan Search dihapus dari sini karena sudah ada di page.tsx */}
       <div className="mt-6 flow-root">
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
