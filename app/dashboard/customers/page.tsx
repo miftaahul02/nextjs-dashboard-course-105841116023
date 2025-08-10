@@ -3,15 +3,20 @@ import CustomersTable from '@/app/ui/customers/table';
 import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons'; // Reuse skeleton, or create a specific CustomersTableSkeleton
 import { Suspense } from 'react';
-import { PageProps } from '@/app/lib/definitions'; // PENTING: IMPOR PAGEPROPS DARI DEFINITIONS.TS
+// import { PageProps } from '@/app/lib/definitions'; // TIDAK PERLU IMPORT PAGEPROPS DI SINI LAGI
 
 // Halaman ini adalah Server Component yang akan menerima searchParams dari URL.
-// Kita menggunakan PageProps yang diimpor untuk mendefinisikan tipenya agar type safety terjaga.
+// Kita mendefinisikan tipenya langsung di parameter agar lebih spesifik dan menghindari konflik dengan PageProps.
 export default async function Page({
   searchParams,
-}: PageProps) {
-  // AWAIT searchParams sebelum mengakses propertinya
-  const resolvedSearchParams = await searchParams; // Tambahkan await di sini!
+}: { // Definisikan tipe searchParams secara langsung di sini
+  searchParams?: {
+    query?: string;
+    page?: string;
+  };
+}) {
+  // AWAIT searchParams sebelum mengakses propertinya (penting untuk server components)
+  const resolvedSearchParams = await searchParams; // Tetap perlu await jika Next.js menganggapnya Promise
 
   const query = resolvedSearchParams?.query || '';
   const currentPage = Number(resolvedSearchParams?.page) || 1;
