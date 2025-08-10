@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { lusitana } from '@/app/ui/fonts';
-import { FormattedCustomersTable } from '@/app/lib/definitions'; // Menggunakan FormattedCustomersTable
+import { FormattedCustomersTable } from '@/app/lib/definitions'; // Pastikan FormattedCustomersTable diimpor
 import { fetchFilteredCustomers } from '@/app/lib/data'; // Import fungsi pengambilan data
 
 // Komponen tabel pelanggan. Ini adalah Server Component.
@@ -8,8 +8,9 @@ export default async function CustomersTable({
   query,
   currentPage, // Parameter currentPage akan digunakan nanti untuk pagination jika ditambahkan
 }: {
+  // Pastikan tipe props ini sesuai dengan yang diharapkan
   query: string;
-  currentPage: number; // Placeholder, akan digunakan di chapter selanjutnya untuk pagination
+  currentPage: number;
 }) {
   // Mengambil data pelanggan yang sudah difilter dari database di dalam komponen ini
   // Ini akan mengambil data setiap kali query atau currentPage berubah

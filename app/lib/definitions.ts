@@ -87,8 +87,8 @@ export type InvoiceForm = {
   status: 'pending' | 'paid';
 };
 
-// INI ADALAH DEFINISI PAGEPROPS YANG HILANG ATAU SALAH
-// Next.js akan menggunakan ini untuk type checking di page.tsx komponen
+// Ini adalah definisi PageProps yang diperlukan untuk komponen halaman Next.js.
+// Pastikan ini adalah satu-satunya definisi PageProps di seluruh proyek Anda.
 export type PageProps = {
   params?: { [key: string]: string | string[] | undefined };
   searchParams?: { [key: string]: string | string[] | undefined };
