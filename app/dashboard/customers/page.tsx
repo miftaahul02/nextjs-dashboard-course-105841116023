@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: 'Customers',
 };
 
+// Cara paling standar dan benar untuk mendefinisikan properti halaman
 export default async function Page({
   searchParams,
 }: {
@@ -37,7 +38,7 @@ export default async function Page({
         <Table customers={customers} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
-        {/* <Pagination totalPages={totalPages} /> */}
+        <Pagination totalPages={totalPages} />
       </div>
     </div>
   );
