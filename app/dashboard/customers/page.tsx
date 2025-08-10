@@ -1,22 +1,34 @@
-// @ts-nocheck
-// Ini adalah versi paling minimal dari halaman pelanggan.
-// Kami menonaktifkan pemeriksaan tipe sebagai solusi darurat
-// karena masalah build yang gigih dan tidak biasa.
+import Search from '@/app/ui/search';
+import CustomersTable from '@/app/ui/customers/table';
+import { lusitana } from '@/app/ui/fonts';
+import { InvoicesTableSkeleton } from '@/app/ui/skeletons'; // Reuse skeleton, or create a specific CustomersTableSkeleton
+import { Suspense } from 'react';
+// import { PageProps } from '@/app/lib/definitions'; // TIDAK PERLU IMPORT PAGEPROPS DI SINI LAGI
 
-import { lusitana } from '@/app/ui/fonts'; // Asumsikan font ini ada dan tidak bermasalah
+// Halaman ini adalah Server Component yang akan menerima searchParams dari URL.
+// Kita mendefinisikan tipenya langsung di parameter agar lebih spesifik dan menghindari konflik dengan PageProps.
+export default async function Page({
+  searchParams,
+}: { // Definisikan tipe searchParams secara langsung di sini
+  searchParams?: {
+    query?: string;
+    page?: string;
+  };
+}) {
+  // AWAIT searchParams sebelum mengakses propertinya (penting untuk server components)
+  const resolvedSearchParams = await searchParams; // Tetap perlu await jika Next.js menganggapnya Promise
 
-// Komponen halaman ini tidak akan menerima props apa pun secara eksplisit,
-// untuk meminimalkan potensi konflik tipe yang aneh.
-export default function Page() {
+  const query = resolvedSearchParams?.query || '';
+  const currentPage = Number(resolvedSearchParams?.page) || 1;
+
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
-      <h1 className={`${lusitana.className} mb-4 text-4xl font-bold text-gray-800`}>
-        Customers Page
-      </h1>
-      <p className="text-lg text-gray-600 text-center max-w-md">
-        Ini adalah halaman pelanggan Anda. Jika Anda melihat ini, build berhasil!
-        Konten akan ditambahkan di sini secara bertahap.
-      </p>
+    <div className="w-full">
+      <h1 className={`${lusitana.className} mb-8 text-2xl`}>Customers</h1>
+      <Search placeholder="Search customers..." />
+      {/* Menggunakan Suspense untuk menampilkan skeleton saat tabel dimuat */}
+      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
+        <CustomersTable query={query} currentPage={currentPage} />
+      </Suspense>
     </div>
   );
 }
