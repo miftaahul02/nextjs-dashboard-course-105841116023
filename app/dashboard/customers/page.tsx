@@ -14,22 +14,40 @@ export const metadata: Metadata = {
 export default async function Page({
   searchParams,
 }: {
-  searchParams?: { query?: string; page?: string };
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const query = searchParams?.query || '';
-  const currentPage = Number(searchParams?.page) || 1;
+  // Resolusi searchParams karena bertipe Promise
+  const resolvedSearchParams = await searchParams;
 
+  // Ambil query dan page dari searchParams dengan default value
+  const query = typeof resolvedSearchParams.query === 'string' ? resolvedSearchParams.query : '';
+  const currentPage = typeof resolvedSearchParams.page === 'string' ? Number(resolvedSearchParams.page) : 1;
 
-  const customers = await fetchFilteredCustomers(query, currentPage);
-  const totalPages = await fetchCustomersPages(query);
+  // Validasi page number untuk mencegah NaN atau nilai tidak valid
+  const safePage = isNaN(currentPage) || currentPage < 1 ? 1 : currentPage;
+
+  // Error handling untuk data fetching
+  let customers = [];
+  let totalPages = 1;
+  try {
+    customers = await fetchFilteredCustomers(query, safePage);
+    totalPages = await fetchCustomersPages(query);
+  } catch (error) {
+    console.error('Gagal mengambil data pelanggan:', error);
+    return (
+      <div className="w-full text-center text-red-500">
+        Gagal memuat data pelanggan. Silakan coba lagi nanti.
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
-        <h1 className={`${lusitana.className} text-2xl`}>Customers</h1>
+        <h1 className={`${lusitana.className} text-2xl`}>Pelanggan</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search customers..." />
+        <Search placeholder="Cari pelanggan..." />
       </div>
       <Suspense fallback={<InvoicesTableSkeleton />}>
         <Table customers={customers} />
