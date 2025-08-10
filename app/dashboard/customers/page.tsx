@@ -18,7 +18,7 @@ interface SearchParam {
 export default async function Page({
   searchParam,
 }: {
-  searchParam?: SearchParams;
+  searchParam?: SearchParam;
 }) {
   const query = searchParam?.query || '';
   const currentPage = Number(searchParam?.page) || 1;
