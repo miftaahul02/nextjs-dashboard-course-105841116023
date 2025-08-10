@@ -1,5 +1,3 @@
-// app/dashboard/customers/page.tsx
-
 import { Metadata } from 'next';
 import { lusitana } from '@/app/ui/fonts';
 import Search from '@/app/ui/search';
@@ -14,15 +12,17 @@ export const metadata: Metadata = {
 };
 
 export default async function Page({
-  searchParams, // <-- Gunakan 'searchParams' (jamak)
+  searchParam,
 }: {
-  searchParams?: {
+  searchParam?: 
+  {
     query?: string;
     page?: string;
   };
-}) {
-  const query = searchParams?.query || '';
-  const currentPage = Number(searchParams?.page) || 1;
+}) 
+{
+  const query = searchParam?.query || '';
+  const currentPage = Number(searchParam?.page) || 1;
 
   const customers = await fetchFilteredCustomers(query, currentPage);
   const totalPages = await fetchCustomersPages(query);
