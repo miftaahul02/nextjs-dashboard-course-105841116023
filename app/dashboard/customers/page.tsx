@@ -11,14 +11,17 @@ export const metadata: Metadata = {
   title: 'Customers',
 };
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: { query?: string; page?: string };
-}) {
+interface CustomerPageProps {
+  searchParams?: {
+    query?: string;
+    page?: string;
+  };
+}
+
+// Tambahkan 'async' di sini
+export default async function Page({ searchParams }: CustomerPageProps) {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
-
 
   const customers = await fetchFilteredCustomers(query, currentPage);
   const totalPages = await fetchCustomersPages(query);
