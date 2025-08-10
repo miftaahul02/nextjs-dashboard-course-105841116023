@@ -14,18 +14,9 @@ const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 // Fungsi untuk mengambil data pendapatan
 export async function fetchRevenue() {
-  noStore(); // Pastikan data tidak di-cache statis
+  noStore();
   try {
-    // Artificially delay a response for demo purposes.
-    // Don't do this in production :)
-
-    // console.log('Fetching revenue data...');
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
-
     const data = await sql<Revenue[]>`SELECT * FROM revenue`;
-
-    // console.log('Data fetch completed after 3 seconds.');
-
     return data;
   } catch (error) {
     console.error('Database Error:', error);
@@ -35,7 +26,7 @@ export async function fetchRevenue() {
 
 // Fungsi untuk mengambil 5 faktur terbaru
 export async function fetchLatestInvoices() {
-  noStore(); // Pastikan data tidak di-cache statis
+  noStore();
   try {
     const data = await sql<LatestInvoiceRaw[]>`
       SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
@@ -57,11 +48,8 @@ export async function fetchLatestInvoices() {
 
 // Fungsi untuk mengambil data kartu ringkasan
 export async function fetchCardData() {
-  noStore(); // Pastikan data tidak di-cache statis
+  noStore();
   try {
-    // You can probably combine these into a single SQL query
-    // However, we are intentionally splitting them to demonstrate
-    // how to initialize multiple queries in parallel with JS.
     const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
     const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
     const invoiceStatusPromise = sql`SELECT
@@ -92,12 +80,13 @@ export async function fetchCardData() {
   }
 }
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 6; // Definisikan di sini atau di awal file jika belum ada
+
 export async function fetchFilteredInvoices(
   query: string,
   currentPage: number,
 ) {
-  noStore(); // Pastikan data tidak di-cache statis
+  noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
@@ -130,7 +119,7 @@ export async function fetchFilteredInvoices(
 }
 
 export async function fetchInvoicesPages(query: string) {
-  noStore(); // Pastikan data tidak di-cache statis
+  noStore();
   try {
     const data = await sql`SELECT COUNT(*)
     FROM invoices
@@ -152,7 +141,7 @@ export async function fetchInvoicesPages(query: string) {
 }
 
 export async function fetchInvoiceById(id: string) {
-  noStore(); // Pastikan data tidak di-cache statis
+  noStore();
   try {
     const data = await sql<InvoiceForm[]>`
       SELECT
@@ -166,7 +155,6 @@ export async function fetchInvoiceById(id: string) {
 
     const invoice = data.map((invoice) => ({
       ...invoice,
-      // Convert amount from cents to dollars
       amount: invoice.amount / 100,
     }));
 
@@ -178,7 +166,7 @@ export async function fetchInvoiceById(id: string) {
 }
 
 export async function fetchCustomers() {
-  noStore(); // Pastikan data tidak di-cache statis
+  noStore();
   try {
     const customers = await sql<CustomerField[]>`
       SELECT
@@ -195,8 +183,10 @@ export async function fetchCustomers() {
   }
 }
 
-export async function fetchFilteredCustomers(query: string) {
-  noStore(); // Pastikan data tidak di-cache statis
+// Fungsi fetchFilteredCustomers yang diperbaiki untuk paginasi
+export async function fetchFilteredCustomers(query: string, currentPage: number) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   try {
     const data = await sql<CustomersTableType[]>`
     SELECT
@@ -214,6 +204,7 @@ export async function fetchFilteredCustomers(query: string) {
         customers.email ILIKE ${`%${query}%`}
     GROUP BY customers.id, customers.name, customers.email, customers.image_url
     ORDER BY customers.name ASC
+    LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 
     const customers = data.map((customer) => ({
@@ -226,5 +217,24 @@ export async function fetchFilteredCustomers(query: string) {
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch customer table.');
+  }
+}
+
+// Fungsi fetchCustomersPages yang sudah benar
+export async function fetchCustomersPages(query: string) {
+  noStore();
+  try {
+    const count = await sql`
+      SELECT COUNT(*)
+      FROM customers
+      WHERE
+        customers.name ILIKE ${`%${query}%`} OR
+        customers.email ILIKE ${`%${query}%`}
+    `;
+    const totalPages = Math.ceil(Number(count[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of customers.');
   }
 }

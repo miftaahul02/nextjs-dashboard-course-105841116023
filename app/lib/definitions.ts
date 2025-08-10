@@ -87,9 +87,4 @@ export type InvoiceForm = {
   status: 'pending' | 'paid';
 };
 
-// Ini adalah definisi PageProps yang diperlukan untuk komponen halaman Next.js.
-// Pastikan ini adalah satu-satunya definisi PageProps di seluruh proyek Anda.
-export type PageProps = {
-  params?: { [key: string]: string | string[] | undefined };
-  searchParams?: { [key: string]: string | string[] | undefined };
-};
+

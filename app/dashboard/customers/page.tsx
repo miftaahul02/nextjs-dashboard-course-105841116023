@@ -4,30 +4,27 @@ import Search from '@/app/ui/search';
 import Table from '@/app/ui/customers/table';
 import { Suspense } from 'react';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
-import { fetchFilteredCustomers } from '@/app/lib/data';
+import { fetchFilteredCustomers, fetchCustomersPages } from '@/app/lib/data';
+import Pagination from '@/app/ui/invoices/pagination';
 
-// Tentukan metadata untuk halaman ini
 export const metadata: Metadata = {
   title: 'Customers',
 };
 
-// Ini adalah komponen halaman utama untuk /dashboard/customers.
-// Tipe data untuk searchParams didefinisikan secara langsung di sini.
 export default async function Page({
   searchParams,
 }: {
   searchParams?: {
     query?: string;
+    page?: string;
   };
 }) {
-  // Ambil nilai 'query' dari searchParams. Jika tidak ada, gunakan string kosong.
   const query = searchParams?.query || '';
+  const currentPage = Number(searchParams?.page) || 1;
 
-  // Ambil data pelanggan yang difilter dari database.
-  // Karena ini adalah Server Component, kita bisa langsung memanggil
-  // fungsi async untuk mengambil data.
-  const customers = await fetchFilteredCustomers(query);
-  
+  const customers = await fetchFilteredCustomers(query, currentPage);
+  const totalPages = await fetchCustomersPages(query);
+
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
@@ -37,9 +34,11 @@ export default async function Page({
         <Search placeholder="Search customers..." />
       </div>
       <Suspense fallback={<InvoicesTableSkeleton />}>
-        {/* Meneruskan data pelanggan ke komponen Table */}
         <Table customers={customers} />
       </Suspense>
+      <div className="mt-5 flex w-full justify-center">
+        <Pagination totalPages={totalPages} />
+      </div>
     </div>
   );
 }
