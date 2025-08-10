@@ -5,18 +5,13 @@ import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 import { fetchFilteredCustomers } from '@/app/lib/data';
 import type { FormattedCustomersTable } from '@/app/lib/definitions';
-import { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Customers',
-};
-
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: { query?: string; page?: string };
+export default async function Page({ 
+  searchParams 
+}: { 
+  searchParams?: Record<string, string | string[] | undefined>;
 }) {
-  const query = searchParams?.query ?? '';
+  const query = typeof searchParams?.query === 'string' ? searchParams.query : '';
 
   let customersToDisplay: FormattedCustomersTable[] = [];
   try {
