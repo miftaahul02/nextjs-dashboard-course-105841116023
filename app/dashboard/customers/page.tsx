@@ -1,3 +1,5 @@
+// app/dashboard/customers/page.tsx
+
 import { Metadata } from 'next';
 import { lusitana } from '@/app/ui/fonts';
 import Search from '@/app/ui/search';
@@ -11,6 +13,8 @@ export const metadata: Metadata = {
   title: 'Customers',
 };
 
+// **Ini adalah bagian yang diubah**
+// Gunakan searchParams (jamak) dan sederhanakan definisinya
 export default async function Page({
   searchParam,
 }: {
