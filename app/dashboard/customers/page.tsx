@@ -24,8 +24,10 @@ export default async function Page({
   const query = searchParams?.query || '';
 
   // Ambil data pelanggan yang difilter dari database.
+  // Karena ini adalah Server Component, kita bisa langsung memanggil
+  // fungsi async untuk mengambil data.
   const customers = await fetchFilteredCustomers(query);
-
+  
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
