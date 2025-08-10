@@ -11,15 +11,14 @@ export const metadata: Metadata = {
   title: 'Customers',
 };
 
-// Interface yang mendefinisikan properti searchParams dengan benar
-interface PageProps {
+export default async function Page({
+  searchParams,
+}: {
   searchParams?: {
     query?: string;
     page?: string;
   };
-}
-
-export default async function Page({ searchParams }: PageProps) {
+}) {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
 
@@ -38,7 +37,7 @@ export default async function Page({ searchParams }: PageProps) {
         <Table customers={customers} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={totalPages} />
+        {/* <Pagination totalPages={totalPages} /> */}
       </div>
     </div>
   );
