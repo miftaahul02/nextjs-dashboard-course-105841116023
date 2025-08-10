@@ -11,7 +11,6 @@ export const metadata: Metadata = {
   title: 'Customers',
 };
 
-// Cara paling standar dan benar untuk mendefinisikan properti halaman
 export default async function Page({
   searchParams,
 }: {
