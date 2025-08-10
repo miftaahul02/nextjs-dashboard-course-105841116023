@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default async function Page({
   searchParams,
 }: {
-  searchParams: { query?: string; page?: string };
+  searchParams?: { query?: string; page?: string };
 }) {
   const query = searchParams?.query || '';
 
@@ -25,7 +25,10 @@ export default async function Page({
     if (Array.isArray(fetchedCustomers)) {
       customersToDisplay = fetchedCustomers;
     } else {
-      console.warn('fetchFilteredCustomers did not return an array:', fetchedCustomers);
+      console.warn(
+        'fetchFilteredCustomers did not return an array:',
+        fetchedCustomers
+      );
     }
   } catch (error) {
     console.error('Failed to fetch customers:', error);
