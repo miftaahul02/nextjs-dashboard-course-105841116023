@@ -11,12 +11,16 @@ export const metadata: Metadata = {
   title: 'Customers',
 };
 
-// Definisi tipe data yang standar dan langsung untuk searchParams
+// Buat interface untuk mendefinisikan tipe data searchParams
+interface SearchParams {
+  query?: string;
+  page?: string;
+}
+
 export default async function Page({
   searchParams,
 }: {
-  query?: string;
-  page?: string;
+  searchParams?: SearchParams;
 }) {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
@@ -36,8 +40,7 @@ export default async function Page({
         <Table customers={customers} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
-        {/* Pastikan Anda uncomment baris ini jika Pagination sudah siap */}
-        <Pagination totalPages={totalPages} />
+        {/* <Pagination totalPages={totalPages} /> */}
       </div>
     </div>
   );
