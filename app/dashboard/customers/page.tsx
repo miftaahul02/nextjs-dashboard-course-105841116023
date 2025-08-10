@@ -11,14 +11,12 @@ export const metadata: Metadata = {
   title: 'Customers',
 };
 
-export default async function Page({
-  searchParam,
-}: {
-  searchParam?: {
-    query?: string;
-    page?: string;
-  };
-}) {
+export default async function Page({ searchParam,}: 
+        Readonly<{searchParam?: {
+        query?: string;
+        page?: string; };
+}>) 
+{
   const query = searchParam?.query || '';
   const currentPage = Number(searchParam?.page) || 1;
 
