@@ -11,14 +11,13 @@ export const metadata: Metadata = {
   title: 'Customers',
 };
 
-interface SearchParam {
-  query?: string;
-  page?: string;
-}
 export default async function Page({
   searchParam,
 }: {
-  searchParam?: SearchParam;
+  searchParam?: {
+    query?: string;
+    page?: string;
+  };
 }) {
   const query = searchParam?.query || '';
   const currentPage = Number(searchParam?.page) || 1;
