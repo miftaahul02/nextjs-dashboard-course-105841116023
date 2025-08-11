@@ -1,3 +1,4 @@
+// app/dashboard/customers/page.tsx
 import { Metadata } from 'next';
 import { lusitana } from '@/app/ui/fonts';
 import Search from '@/app/ui/search';
@@ -11,17 +12,20 @@ export const metadata: Metadata = {
   title: 'Customers',
 };
 
-interface CustomerPageProps {
-  searchParam?: {
-    query?: string;
-    page?: string;
-  };
-}
+// --- Hapus baris di bawah ini ---
+// interface CustomerPageProps {
+//   searchParams?: {
+//     query?: string;
+//     page?: string;
+//   };
+// }
+// ---------------------------------
 
-// Tambahkan 'async' di sini
-export default async function Page({ searchParam }: CustomerPageProps) {
-  const query = searchParam?.query || '';
-  const currentPage = Number(searchParam?.page) || 1;
+// Modifikasi deklarasi fungsi di bawah ini
+// Hapus `{ searchParams }: CustomerPageProps`
+export default async function Page() {
+  const query = '';
+  const currentPage = 1;
 
   const customers = await fetchFilteredCustomers(query, currentPage);
   const totalPages = await fetchCustomersPages(query);
@@ -32,7 +36,7 @@ export default async function Page({ searchParam }: CustomerPageProps) {
         <h1 className={`${lusitana.className} text-2xl`}>Customers</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search customers..." />
+        <Search placeholder="Cari pelanggan..." />
       </div>
       <Suspense fallback={<InvoicesTableSkeleton />}>
         <Table customers={customers} />
