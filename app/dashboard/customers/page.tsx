@@ -11,15 +11,11 @@ export const metadata: Metadata = {
   title: 'Customers',
 };
 
-interface CustomerPageProps {
-  searchParam?: {
-    query?: string;
-    page?: string;
-  };
-}
-
-// Tambahkan 'async' di sini
-export default async function Page({ searchParam }: CustomerPageProps) {
+export default async function Page({
+  searchParam,
+}: {
+  searchParam?: { query?: string; page?: string };
+}) {
   const query = searchParam?.query || '';
   const currentPage = Number(searchParam?.page) || 1;
 
