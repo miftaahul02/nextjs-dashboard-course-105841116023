@@ -1,22 +1,21 @@
 import Pagination from '@/app/ui/invoices/pagination';
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/invoices/table';
-import { CreateInvoice } from '@/app/ui/invoices/buttons'; // Import tombol buat invoice
+import { CreateInvoice } from '@/app/ui/invoices/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
-import { fetchInvoicesPages } from '@/app/lib/data'; // Import fungsi untuk menghitung total halaman
+import { fetchInvoicesPages } from '@/app/lib/data';
 
 export default async function Page({
   searchParams,
 }: {
-  searchParams?: {
-    query?: string;
-    page?: string;
-  };
+  searchParams: Promise<{ query?: string; page?: string }>;
 }) {
-  const query = searchParams?.query || ''; // Ambil query dari URL
-  const currentPage = Number(searchParams?.page) || 1; // Ambil currentPage dari URL
+  // Resolusi searchParams karena ini adalah Promise
+  const params = await searchParams;
+  const query = params?.query || ''; // Ambil query dari URL, default ke string kosong
+  const currentPage = Number(params?.page) || 1; // Ambil currentPage dari URL, default ke 1
 
   const totalPages = await fetchInvoicesPages(query); // Ambil total halaman berdasarkan query
 
@@ -27,6 +26,7 @@ export default async function Page({
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search invoices..." />
+        <CreateInvoice /> {/* Tombol untuk membuat invoice */}
       </div>
       {/* Meneruskan query dan currentPage ke komponen Table */}
       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
