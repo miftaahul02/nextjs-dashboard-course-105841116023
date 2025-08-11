@@ -1,23 +1,20 @@
-import { Metadata } from 'next';
-import { lusitana } from '@/app/ui/fonts';
-import Search from '@/app/ui/search';
-import Table from '@/app/ui/customers/table';
 import { Suspense } from 'react';
-import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
-import { fetchFilteredCustomers, fetchCustomersPages } from '@/app/lib/data';
-import Pagination from '@/app/ui/invoices/pagination';
+import { fetchFilteredCustomers } from '@/app/lib/data'; // Impor fungsi untuk mengambil data pelanggan
+import CustomersTable from '@/app/ui/customers/table'; // Pastikan file ini ada
+import { CustomersTableSkeleton } from '@/app/ui/skeletons'; // Pastikan file ini ada
+import Search from '@/app/ui/search'; // Pastikan file ini ada
+import { lusitana } from '@/app/ui/fonts'; // Pastikan file ini ada
 
-export const metadata: Metadata = {
-  title: 'Customers',
-};
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ query?: string; page?: string }>;
+}) {
+  const params = await searchParams;
+  const query = params?.query || '';
+  const currentPage = Number(params?.page) || 1;
 
-export default async function Page({ searchParams }: { searchParams?: any }) {
-  const query = searchParams?.query ?? '';
-  const currentPage = Number(searchParams?.page ?? '1');
-
-  // fetch data
   const customers = await fetchFilteredCustomers(query, currentPage);
-  const totalPages = await fetchCustomersPages(query);
 
   return (
     <div className="w-full">
@@ -27,12 +24,9 @@ export default async function Page({ searchParams }: { searchParams?: any }) {
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search customers..." />
       </div>
-      <Suspense fallback={<InvoicesTableSkeleton />}>
-        <Table customers={customers} />
+      <Suspense key={query + currentPage} fallback={<CustomersTableSkeleton />}>
+        <CustomersTable customers={customers} />
       </Suspense>
-      <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={totalPages} />
-      </div>
     </div>
   );
 }

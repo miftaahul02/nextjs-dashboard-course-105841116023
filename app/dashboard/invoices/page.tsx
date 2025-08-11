@@ -26,7 +26,7 @@ export default async function Page({
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search invoices..." />
-        <CreateInvoice /> {/* Tombol untuk membuat invoice */}
+        {/* <CreateInvoice /> Tombol untuk membuat invoice */}
       </div>
       {/* Meneruskan query dan currentPage ke komponen Table */}
       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
@@ -34,7 +34,7 @@ export default async function Page({
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         {/* Meneruskan totalPages ke komponen Pagination */}
-        <Pagination totalPages={totalPages} />
+        {/* <Pagination totalPages={totalPages} /> */}
       </div>
     </div>
   );
