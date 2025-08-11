@@ -1,52 +1,40 @@
-import { Metadata } from 'next';
-import { lusitana } from '@/app/ui/fonts';
-import Search from '@/app/ui/search';
-import Table from '@/app/ui/invoices/table'; // Pastikan ini mengarah ke table faktur
-import { Suspense } from 'react';
-import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
-import { fetchFilteredInvoices, fetchInvoicesPages } from '@/app/lib/data'; // Pastikan fungsi pengambilan data faktur
 import Pagination from '@/app/ui/invoices/pagination';
+import Search from '@/app/ui/search';
+import Table from '@/app/ui/invoices/table';
+import { CreateInvoice } from '@/app/ui/invoices/buttons'; // Import tombol buat invoice
+import { lusitana } from '@/app/ui/fonts';
+import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
+import { Suspense } from 'react';
+import { fetchInvoicesPages } from '@/app/lib/data'; // Import fungsi untuk menghitung total halaman
 
-export const metadata: Metadata = {
-  title: 'Invoices',
-};
+export default async function Page({
+  searchParam,
+}: {
+  searchParam?: {
+    query?: string;
+    page?: string;
+  };
+}) {
+  const query = searchParam?.query || ''; // Ambil query dari URL
+  const currentPage = Number(searchParam?.page) || 1; // Ambil currentPage dari URL
 
-// --- Hapus deklarasi interface yang terkait searchParams di sini jika ada ---
-// Contoh:
-// interface InvoicesPageProps {
-//   searchParams?: {
-//     query?: string;
-//     page?: string;
-//   };
-// }
-// -------------------------------------------------------------------------
-
-// Modifikasi deklarasi fungsi Page
-// Hapus `{ searchParams }: InvoicesPageProps` dari parameter fungsi
-export default async function Page() {
-  // Atur nilai default karena searchParams tidak digunakan
-  const query = '';
-  const currentPage = 1;
-
-  // Panggil fungsi pengambilan data faktur
-  const invoices = await fetchFilteredInvoices(query, currentPage);
-  const totalPages = await fetchInvoicesPages(query);
+  const totalPages = await fetchInvoicesPages(query); // Ambil total halaman berdasarkan query
 
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
-        <h1 className={`${lusitana.className} text-2xl`}>Faktur</h1>
+        <h1 className={`${lusitana.className} text-2xl`}>Invoices</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        {/* Search dan Pagination akan berfungsi jika mereka mengelola state internal,
-            bukan mengandalkan URL params. */}
-        <Search placeholder="Cari faktur..." />
+        <Search placeholder="Search invoices..." />
       </div>
-      <Suspense fallback={<InvoicesTableSkeleton />}>
-        <Table invoices={invoices} />
+      {/* Meneruskan query dan currentPage ke komponen Table */}
+      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
+        <Table query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={totalPages} />
+        {/* Meneruskan totalPages ke komponen Pagination */}
+        {/* <Pagination totalPages={totalPages} /> */}
       </div>
     </div>
   );
