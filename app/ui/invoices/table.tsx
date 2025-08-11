@@ -1,123 +1,56 @@
-import Image from 'next/image';
-import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
-import InvoiceStatus from '@/app/ui/invoices/status';
-import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import { fetchFilteredInvoices } from '@/app/lib/data';
+import { Metadata } from 'next';
+import { lusitana } from '@/app/ui/fonts';
+import Search from '@/app/ui/search';
+import Table from '@/app/ui/invoices/table'; // Ini adalah InvoicesTable dari app/ui/invoices/table.tsx
+import { Suspense } from 'react';
+import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
+// import { fetchFilteredInvoices, fetchInvoicesPages } from '@/app/lib/data'; // Tidak perlu lagi diimpor di sini
 
-export default async function InvoicesTable({
-  query,
-  currentPage,
-}: {
-  query: string;
-  currentPage: number;
-}) {
-  const invoices = await fetchFilteredInvoices(query, currentPage);
+export const metadata: Metadata = {
+  title: 'Invoices',
+};
+
+// Komponen Page tidak lagi menerima props searchParams
+export default async function Page() {
+  // Karena searchParams tidak digunakan, kita akan mengatur query dan currentPage
+  // secara default untuk diteruskan ke komponen Table.
+  const query = ''; // Mengatur kueri kosong secara default
+  const currentPage = 1; // Mengatur halaman pertama secara default
+
+  // Catatan: Anda tidak lagi perlu memanggil fetchFilteredInvoices dan fetchInvoicesPages di sini,
+  // karena komponen Table (InvoicesTable) akan memanggilnya sendiri.
+  // Jika Anda masih ingin menggunakan totalPages untuk Pagination, Anda bisa memanggilnya secara terpisah.
+  // Untuk contoh ini, kita asumsikan Pagination mungkin tidak sepenuhnya berfungsi tanpa URL params.
+  // Atau Anda bisa memindahkan fetchInvoicesPages ke komponen Pagination sendiri,
+  // yang juga merupakan Server Component.
+  const totalPages = 1; // Atur totalPages ke nilai default jika tidak ada paginasi aktif
 
   return (
-    <div className="mt-6 flow-root">
-      <div className="inline-block min-w-full align-middle">
-        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
-          <div className="md:hidden">
-            {invoices?.map((invoice) => (
-              <div
-                key={invoice.id}
-                className="mb-2 w-full rounded-md bg-white p-4"
-              >
-                <div className="flex items-center justify-between border-b pb-4">
-                  <div>
-                    <div className="mb-2 flex items-center">
-                      <Image
-                        src={invoice.image_url}
-                        className="mr-2 rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      />
-                      <p>{invoice.name}</p>
-                    </div>
-                    <p className="text-sm text-gray-500">{invoice.email}</p>
-                  </div>
-                  <InvoiceStatus status={invoice.status} />
-                </div>
-                <div className="flex w-full items-center justify-between pt-4">
-                  <div>
-                    <p className="text-xl font-medium">
-                      {formatCurrency(invoice.amount)}
-                    </p>
-                    <p>{formatDateToLocal(invoice.date)}</p>
-                  </div>
-                  <div className="flex justify-end gap-2">
-                    <UpdateInvoice id={invoice.id} />
-                    <DeleteInvoice id={invoice.id} />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <table className="hidden min-w-full text-gray-900 md:table">
-            <thead className="rounded-lg text-left text-sm font-normal">
-              <tr>
-                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Customer
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Email
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Amount
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Date
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Status
-                </th>
-                <th scope="col" className="relative py-3 pl-6 pr-3">
-                  <span className="sr-only">Edit</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white">
-              {invoices?.map((invoice) => (
-                <tr
-                  key={invoice.id}
-                  className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
-                >
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex items-center gap-3">
-                      <Image
-                        src={invoice.image_url}
-                        className="rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      />
-                      <p>{invoice.name}</p>
-                    </div>
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {invoice.email}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {formatCurrency(invoice.amount)}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(invoice.date)}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    <InvoiceStatus status={invoice.status} />
-                  </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex justify-end gap-3">
-                      <UpdateInvoice id={invoice.id} />
-                      <DeleteInvoice id={invoice.id} />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+    <div className="w-full">
+      <div className="flex w-full items-center justify-between">
+        <h1 className={`${lusitana.className} text-2xl`}>Faktur</h1>
+      </div>
+      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+        {/*
+          Komponen Search ini tidak akan lagi memengaruhi URL.
+          Jika Anda ingin fungsionalitas pencarian, Anda perlu
+          mengelola state pencarian di sisi klien (misalnya dengan useState)
+          dan meneruskannya ke komponen Table.
+        */}
+        <Search placeholder="Cari faktur..." />
+      </div>
+      <Suspense fallback={<InvoicesTableSkeleton />}>
+        {/* Meneruskan prop query dan currentPage yang diharapkan oleh InvoicesTable */}
+        <Table query={query} currentPage={currentPage} />
+      </Suspense>
+      <div className="mt-5 flex w-full justify-center">
+        {/*
+          Komponen Pagination ini tidak akan lagi memengaruhi URL.
+          totalPages di sini akan statis (misalnya 1) kecuali Anda mendapatkan
+          nilai ini dari cara lain (misalnya, memanggil fetchInvoicesPages
+          langsung di komponen Pagination atau di sini secara terpisah).
+        */}
+        <Pagination totalPages={totalPages} />
       </div>
     </div>
   );
