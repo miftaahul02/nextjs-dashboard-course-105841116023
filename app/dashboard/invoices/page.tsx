@@ -5,36 +5,32 @@ import { CreateInvoice } from '@/app/ui/invoices/buttons'; // Import tombol buat
 import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
-import { fetchInvoicesPages } from '@/app/lib/data'; // Import fungsi untuk menghitung total halaman
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: {
-    query?: string;
-    page?: string;
-  };
-}) {
-  const query = searchParams?.query || ''; // Ambil query dari URL
-  const currentPage = Number(searchParams?.page) || 1; // Ambil currentPage dari URL
+// Pastikan import fungsi yang benar untuk invoice, bukan customer
+import { fetchFilteredInvoices, fetchInvoicesPages } from '@/app/lib/data'; 
 
-  const totalPages = await fetchInvoicesPages(query); // Ambil total halaman berdasarkan query
+export default async function Page({ searchParams }: { searchParams?: any }) {
+  const query = searchParams?.query ?? '';
+  const currentPage = Number(searchParams?.page ?? '1');
+
+  // fetch data invoice
+  const invoices = await fetchFilteredInvoices(query, currentPage);
+  const totalPages = await fetchInvoicesPages(query);
 
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
         <h1 className={`${lusitana.className} text-2xl`}>Invoices</h1>
+        <CreateInvoice />
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search invoices..." />
       </div>
-      {/* Meneruskan query dan currentPage ke komponen Table */}
       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
-        {/* Meneruskan totalPages ke komponen Pagination */}
-        {/* <Pagination totalPages={totalPages} /> */}
+        <Pagination totalPages={totalPages} />
       </div>
     </div>
   );
