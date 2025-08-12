@@ -26,7 +26,7 @@ export default async function Page({
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search invoices..." />
-        {/* <CreateInvoice /> Tombol untuk membuat invoice */}
+        <CreateInvoice /> 
       </div>
       {/* Meneruskan query dan currentPage ke komponen Table */}
       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
